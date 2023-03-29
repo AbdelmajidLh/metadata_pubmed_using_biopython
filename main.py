@@ -8,31 +8,12 @@ from Bio import Medline
 import pandas as pd
 from tqdm import tqdm
 
-data = []
-
 # read and parse file
 with open('pubmed-machinelea-set.txt', encoding='utf-8') as file:
     pmids = Medline.parse(file)
-    for pmid in pmids:
-        try:
-            pid = pmid['PMID']
-        except:
-            pid = ''
-        try:
-            title = pmid['TI']
-        except:
-            title=''
-        try:
-            abstract = pmid['AB']
-        except:
-            abstract = ''
-        # save data to a dictionnary
-        dict = {
-            'PMID' : pid,
-            'TI' : title,
-            'AB' : abstract
-        }
-        data.append(dict)
+    # use list comprehension to create list of dictionaries
+    data = [{'PMID': pmid.get('PMID', ''), 'TI': pmid.get('TI', ''), 'AB': pmid.get('AB', '')} for pmid in tqdm(pmids)]
+    
 # save data in a dataframe
 df = pd.DataFrame(data)
 
